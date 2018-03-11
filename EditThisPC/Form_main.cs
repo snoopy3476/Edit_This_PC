@@ -10,8 +10,10 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 using Microsoft.Win32;
 using System.Globalization;
+
 
 namespace EditMyPC
 {
@@ -98,9 +100,11 @@ namespace EditMyPC
         
         private void button_apply_Click(object sender, EventArgs e)
         {
+            // confirm user
             DialogResult ask_user = MessageBox.Show(
-                "This operation edits registries corresponding to 'Folders' in 'This PC', and I CANNOT say there is no possibility of malfunction after doing this. " +
-                "Make sure you have backups of your important data.\n" +
+                "This operation simply edits registries corresponding to 'Folders' in 'This PC', " +
+                "but I CANNOT assure you that there is no possibility of malfunction after done. " +
+                "Make sure you have backups of your important data.\n\n" +
                 "Are you sure you want to apply the modification right now?",
                 "WARNING",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
@@ -119,6 +123,38 @@ namespace EditMyPC
                         else
                             Registry.LocalMachine.DeleteSubKeyTree(path + name, false);
                     }
+
+
+            // ask user to restart explorer.exe right now
+            ask_user = MessageBox.Show(
+                "Applying changes complete!\n\n" +
+                "To be operated properly, you have to restart 'explorer.exe' processes. " +
+                "But it will cause all windows of explorer to exit (Folder windows, process of copying files, etc...).\n\n" +
+                "DON'T PRESS YES if you are doing some working at your desktop. " +
+                "CLOSE ALL PROGRAM BEFORE YOU CONTINUE to avoid cases of sudden stop.\n\n" +
+                "Are you sure you want to restart all 'explorer.exe' processes right now?",
+                "WARNING",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+            if (ask_user == DialogResult.No)
+                return;
+
+            Process[] proc_list = Process.GetProcessesByName("explorer");
+            foreach (Process cur_proc in proc_list)
+            {
+                cur_proc.Kill();
+                cur_proc.WaitForExit(5000);
+                try
+                {
+                    // if explorer does not restart automatically, then start it manually
+                    if (Process.GetProcessesByName("explorer").Length == 0)
+                        cur_proc.Start();
+                }
+                catch(Exception)
+                {
+
+                }
+            }
         }
 
         private void button_exit_Click(object sender, EventArgs e)
@@ -183,27 +219,18 @@ namespace EditMyPC
         
 
 
-        public static Icon GetIconImage(int icon_index, bool big_icon = true)
+        public static Icon GetIconImage(int icon_index)
         {
             try
             {
-                Icon[] icons = new Icon[2];
                 IntPtr largeIconHandle = IntPtr.Zero;
                 IntPtr smallIconHandle = IntPtr.Zero;
                 ExtractIconEx(icons_path, icon_index, out largeIconHandle, out smallIconHandle, 1);
-                icons[0] = (Icon)Icon.FromHandle(largeIconHandle).Clone();
-                icons[1] = (Icon)Icon.FromHandle(smallIconHandle).Clone();
+                Icon icon = (Icon)Icon.FromHandle(largeIconHandle).Clone();
                 DestroyIcon(largeIconHandle);
                 DestroyIcon(smallIconHandle);
 
-                if (big_icon)
-                {
-                    return icons[0];
-                }
-                else
-                {
-                    return icons[1];
-                }
+                return icon;
             }
             catch (Exception)
             {
