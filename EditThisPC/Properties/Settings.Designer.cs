@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace EditMyPC.Properties {
+namespace Edit_This_PC.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

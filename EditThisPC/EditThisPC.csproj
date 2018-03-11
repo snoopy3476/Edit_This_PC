@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{182AA631-42F0-48E5-BEE4-4FE3E197C4BF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>EditMyPC</RootNamespace>
-    <AssemblyName>EditMyPC</AssemblyName>
+    <RootNamespace>Edit_This_PC</RootNamespace>
+    <AssemblyName>Edit This PC</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -31,6 +31,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationIcon>Resources\if_My-Computer_35477.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -99,8 +103,10 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Resources\" />
+    <Content Include="if_My-Computer_35477.ico" />
+    <Content Include="Resources\if_My-Computer_35477.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
